@@ -36,18 +36,6 @@ const Dashboard = () => {
           <div className="block w-full px-10 py-2 bg-blue-300">
             <p className="text-blue-700 font-semibold">Dashboard</p>
           </div>
-          {/* <div className="block w-full px-10 py-2 bg-white">
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-medium text-gray-900">Barang</h3>
-              <button
-                className=" bg-blue-400 px-3 py-2 shadow rounded-lg text-white text-sm"
-                onClick={handleBarangOpenModal}
-              >
-                Tambah Barang
-              </button>
-            </div>
-          </div> */}
-          {/* <Table /> */}
           {activeTab === "supplier" && <TableSupplier />}
           {activeTab === "barang" && <TableBarang />}
         </div>

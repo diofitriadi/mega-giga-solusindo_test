@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import data from "../api/data";
 import AddBarangModal from "./AddBarangModal";
+import EditBarangModal from "./EditBarangModal";
 
 const TableBarang = () => {
   const [isBarangModalOpen, setIsBarangModalOpen] = useState(false);
@@ -10,6 +11,15 @@ const TableBarang = () => {
 
   const handleCloseBarangModal = () => {
     setIsBarangModalOpen(false);
+  };
+
+  const [isEditBarangModalOpen, setisEditBarangModalOpen] = useState(false);
+  const handleOpenEditBarangModal = () => {
+    setisEditBarangModalOpen(true);
+  };
+
+  const handleCloseEditBarangModal = () => {
+    setisEditBarangModalOpen(false);
   };
 
   return (
@@ -51,7 +61,10 @@ const TableBarang = () => {
                   <td className="border px-5 py-2">{item.supplierAddress}</td>
                   <td className="border px-5 py-2">{item.supplierPhone}</td>
                   <td className="border px-5">
-                    <button className="bg-yellow-500 px-1 py-1 m-2 rounded-lg shadow">
+                    <button
+                      onClick={handleOpenEditBarangModal}
+                      className="bg-yellow-500 px-1 py-1 m-2 rounded-lg shadow"
+                    >
                       Edit
                     </button>
                     <button className="bg-red-500 px-1 py-1 rounded-lg shadow">
@@ -109,6 +122,11 @@ const TableBarang = () => {
       <AddBarangModal
         isOpen={isBarangModalOpen}
         onClose={handleCloseBarangModal}
+        // onSubmit={handleAddBarang}
+      />
+      <EditBarangModal
+        isOpen={isEditBarangModalOpen}
+        onClose={handleCloseEditBarangModal}
         // onSubmit={handleAddBarang}
       />
     </>

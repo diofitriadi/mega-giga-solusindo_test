@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import dataSupplier from "../api/dataSupplier";
 import AddSupplierModal from "./AddSupplierModal";
+import EditSupplierModal from "./EditSupplierModal";
 
 const TableSupplier = () => {
   const [isSupplierModalOpen, setIsSupplierModalOpen] = useState(false);
@@ -10,6 +11,14 @@ const TableSupplier = () => {
 
   const handleCloseSupplierModal = () => {
     setIsSupplierModalOpen(false);
+  };
+  const [isEditSupplierModalOpen, setisEditSupplierModalOpen] = useState(false);
+  const handleOpenEditSupplierModal = () => {
+    setisEditSupplierModalOpen(true);
+  };
+
+  const handleCloseEditSupplierModal = () => {
+    setisEditSupplierModalOpen(false);
   };
   return (
     <>
@@ -44,7 +53,10 @@ const TableSupplier = () => {
                   <td className="border px-16 py-2">{item.alamat}</td>
                   <td className="border px-5 py-2">{item.no_telp}</td>
                   <td className="border px-5">
-                    <button className="bg-yellow-500 px-1 py-1 m-2 rounded-lg shadow">
+                    <button
+                      className="bg-yellow-500 px-1 py-1 m-2 rounded-lg shadow"
+                      onClick={handleOpenEditSupplierModal}
+                    >
                       Edit
                     </button>
                     <button className="bg-red-500 px-1 py-1 rounded-lg shadow">
@@ -102,6 +114,11 @@ const TableSupplier = () => {
       <AddSupplierModal
         isOpen={isSupplierModalOpen}
         onClose={handleCloseSupplierModal}
+        // onSubmit={handleAddSupplier}
+      />
+      <EditSupplierModal
+        isOpen={isEditSupplierModalOpen}
+        onClose={handleCloseEditSupplierModal}
         // onSubmit={handleAddSupplier}
       />
     </>
