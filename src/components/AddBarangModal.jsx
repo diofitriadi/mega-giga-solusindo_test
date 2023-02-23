@@ -103,38 +103,6 @@ const AddBarangModal = ({ isOpen, onClose, onSubmit }) => {
                     // value={formData.supplierName}
                   />
                 </div>
-                <div className="mb-4">
-                  <label
-                    htmlFor="supplierAddress"
-                    className="block text-gray-700 font-bold mb-2"
-                  >
-                    Alamat Supplier
-                  </label>
-                  <input
-                    type="text"
-                    id="supplierAddress"
-                    name="supplierAddress"
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    // onChange={handleChange}
-                    // value={formData.supplierAddress}
-                  />
-                </div>
-                <div className="mb-4">
-                  <label
-                    htmlFor="supplierPhone"
-                    className="block text-gray-700 font-bold mb-2"
-                  >
-                    No Telp Supplier
-                  </label>
-                  <input
-                    type="text"
-                    id="supplierPhone"
-                    name="supplierPhone"
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    // onChange={handleChange}
-                    // value={formData.supplierPhone}
-                  />
-                </div>
                 <div className="flex justify-end">
                   <button
                     type="button"
