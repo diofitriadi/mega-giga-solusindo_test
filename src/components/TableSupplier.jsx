@@ -19,7 +19,12 @@ const TableSupplier = () => {
     setIsSupplierModalOpen(false);
   };
   const [isEditSupplierModalOpen, setisEditSupplierModalOpen] = useState(false);
-  const handleOpenEditSupplierModal = () => {
+  const [isEditSupplier, setIsEditSupplier] = useState(false);
+  const [supplierId, setSupplierId] = useState("");
+  const handleOpenEditSupplierModal = (id) => {
+    console.log(id);
+    setIsEditSupplier(true);
+    setSupplierId(id);
     setisEditSupplierModalOpen(true);
   };
 
@@ -65,10 +70,61 @@ const TableSupplier = () => {
       );
       alert("Add Data Berhasil");
       console.log(response.data);
+      getSupplier();
     } catch (error) {
       console.log(error);
     }
   };
+
+  const handleDelete = async (id) => {
+    try {
+      const confirmed = window.confirm(
+        "Apakah anda ingin menghapus data ini ?"
+      );
+      if (!confirmed) return;
+
+      const response = await axios.delete(
+        `http://159.223.57.121:8090/supplier/delete/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(id);
+      console.log(response.data);
+      alert("Supplier berhasil dihapus");
+
+      // Panggil kembali fungsi getSupplier untuk memperbarui data
+      getSupplier();
+    } catch (error) {
+      console.log(error);
+      alert("Supplier gagal dihapus");
+    }
+  };
+
+  const handleUpdateSupplier = async (formData, id) => {
+    try {
+      const response = await axios.put(
+        `http://159.223.57.121:8090/supplier/update/${id}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(response.data);
+      alert("Data berhasil diperbarui");
+
+      // Panggil kembali fungsi getSupplier untuk memperbarui data
+      getSupplier();
+    } catch (error) {
+      console.log(error);
+      alert("Data gagal diperbarui");
+    }
+  };
+
   return (
     <>
       <div className="block w-full px-10 py-2 bg-white">
@@ -108,11 +164,17 @@ const TableSupplier = () => {
                     <td className="border px-5">
                       <button
                         className="bg-yellow-500 px-1 py-1 m-2 rounded-lg shadow"
-                        onClick={handleOpenEditSupplierModal}
+                        onClick={() => {
+                          setSupplierId(item.supplierId);
+                          handleOpenEditSupplierModal(item.id);
+                        }}
                       >
                         Edit
                       </button>
-                      <button className="bg-red-500 px-1 py-1 rounded-lg shadow">
+                      <button
+                        onClick={() => handleDelete(item.id)}
+                        className="bg-red-500 px-1 py-1 rounded-lg shadow"
+                      >
                         Delete
                       </button>
                     </td>
@@ -172,8 +234,9 @@ const TableSupplier = () => {
       />
       <EditSupplierModal
         isOpen={isEditSupplierModalOpen}
+        supplierId={supplierId}
         onClose={handleCloseEditSupplierModal}
-        // onSubmit={handleAddSupplier}
+        onSubmit={handleUpdateSupplier}
       />
     </>
   );

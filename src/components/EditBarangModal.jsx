@@ -1,25 +1,22 @@
 import React, { useState } from "react";
 
-const EditBarangModal = ({ isOpen, onClose, onSubmit }) => {
-  // const [formData, setFormData] = useState({
-  //   name: "",
-  //   stock: "",
-  //   price: "",
-  //   supplierName: "",
-  //   supplierAddress: "",
-  //   supplierPhone: "",
-  // });
+const EditBarangModal = ({ isOpen, onClose, onSubmit, barangId }) => {
+  const [formData, setFormData] = useState({
+    namaBarang: "",
+    stok: "",
+    harga: "",
+    id: barangId,
+  });
 
-  // const handleChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
-  // };
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   onSubmit(formData);
-  //   onClose();
-  // };
+  const handleEdit = (event) => {
+    event.preventDefault();
+    onSubmit(formData.id, barangId);
+    onClose();
+  };
 
   return (
     <>
@@ -35,72 +32,53 @@ const EditBarangModal = ({ isOpen, onClose, onSubmit }) => {
               <div className="bg-gray-200 py-2 px-4">
                 <h3 className="text-lg font-bold">Edit Barang</h3>
               </div>
-              <form
-                // onSubmit={handleSubmit}
-                className="px-4 py-4"
-              >
+              <form onSubmit={handleEdit} className="px-4 py-4">
                 <div className="mb-4">
                   <label
-                    htmlFor="name"
+                    htmlFor="namaBarang"
                     className="block text-gray-700 font-bold mb-2"
                   >
                     Nama Barang
                   </label>
                   <input
                     type="text"
-                    id="name"
-                    name="name"
+                    id="namaBarang"
+                    name="namaBarang"
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    // onChange={handleChange}
-                    // value={formData.name}
+                    onChange={handleChange}
+                    value={formData.namaBarang}
                   />
                 </div>
                 <div className="mb-4">
                   <label
-                    htmlFor="stock"
+                    htmlFor="stok"
                     className="block text-gray-700 font-bold mb-2"
                   >
                     Stock
                   </label>
                   <input
                     type="number"
-                    id="stock"
-                    name="stock"
+                    id="stok"
+                    name="stok"
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    // onChange={handleChange}
-                    // value={formData.stock}
+                    onChange={handleChange}
+                    value={formData.stok}
                   />
                 </div>
                 <div className="mb-4">
                   <label
-                    htmlFor="price"
+                    htmlFor="harga"
                     className="block text-gray-700 font-bold mb-2"
                   >
                     Harga
                   </label>
                   <input
                     type="number"
-                    id="price"
-                    name="price"
+                    id="harga"
+                    name="harga"
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    // onChange={handleChange}
-                    // value={formData.price}
-                  />
-                </div>
-                <div className="mb-4">
-                  <label
-                    htmlFor="supplierName"
-                    className="block text-gray-700 font-bold mb-2"
-                  >
-                    Nama Supplier
-                  </label>
-                  <input
-                    type="text"
-                    id="supplierName"
-                    name="supplierName"
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    // onChange={handleChange}
-                    // value={formData.supplierName}
+                    onChange={handleChange}
+                    value={formData.harga}
                   />
                 </div>
                 <div className="flex justify-end">

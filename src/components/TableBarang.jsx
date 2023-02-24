@@ -21,7 +21,12 @@ const TableBarang = () => {
   };
 
   const [isEditBarangModalOpen, setisEditBarangModalOpen] = useState(false);
-  const handleOpenEditBarangModal = () => {
+  const [isEditBarang, setIsEditBarang] = useState(false);
+  const [barangId, setBarangId] = useState("");
+  const handleOpenEditBarangModal = (id) => {
+    console.log(id);
+    setIsEditBarang(true);
+    setBarangId(id);
     setisEditBarangModalOpen(true);
   };
 
@@ -68,9 +73,59 @@ const TableBarang = () => {
         }
       );
       alert("Add Data Berhasil");
+      getBarang();
       console.log(response.data);
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  // Delete Barang
+  const handleDelete = async (id) => {
+    try {
+      const confirmed = window.confirm(
+        "Apakah anda ingin menghapus data ini ?"
+      );
+      if (!confirmed) return;
+
+      const response = await axios.delete(
+        `http://159.223.57.121:8090/barang/delete/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(id);
+      console.log(response.data);
+      alert("Barang berhasil dihapus");
+
+      getBarang();
+    } catch (error) {
+      console.log(error);
+      alert("Barang gagal dihapus");
+    }
+  };
+
+  const handleUpdateBarang = async (formData, id) => {
+    try {
+      const response = await axios.put(
+        `http://159.223.57.121:8090/barang/update/${id}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(response.data);
+      alert("Data berhasil diperbarui");
+
+      // Panggil kembali fungsi getBarang untuk memperbarui data
+      getBarang();
+    } catch (error) {
+      console.log(error);
+      alert("Data gagal diperbarui");
     }
   };
 
@@ -115,12 +170,18 @@ const TableBarang = () => {
                     </td>
                     <td className="border px-5">
                       <button
-                        onClick={handleOpenEditBarangModal}
+                        onClick={() => {
+                          setBarangId(item.barangId);
+                          handleOpenEditBarangModal(item.id);
+                        }}
                         className="bg-yellow-500 px-1 py-1 m-2 rounded-lg shadow"
                       >
                         Edit
                       </button>
-                      <button className="bg-red-500 px-1 py-1 rounded-lg shadow">
+                      <button
+                        onClick={() => handleDelete(item.id)}
+                        className="bg-red-500 px-1 py-1 rounded-lg shadow"
+                      >
                         Delete
                       </button>
                     </td>
@@ -172,8 +233,9 @@ const TableBarang = () => {
       />
       <EditBarangModal
         isOpen={isEditBarangModalOpen}
+        barangId={barangId}
         onClose={handleCloseEditBarangModal}
-        // onSubmit={handleAddBarang}
+        onSubmit={handleUpdateBarang}
       />
     </>
   );
