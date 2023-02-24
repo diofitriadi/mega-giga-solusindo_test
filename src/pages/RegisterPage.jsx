@@ -1,30 +1,32 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authContext";
 
 function RegisterPage() {
-  const apiUrl = import.meta.env.VITE_API_URL;
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [profileName, setProfileName] = useState("");
   // const history = unstable_HistoryRouter();
 
+  const navigate = useNavigate();
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    if (name === "email") setEmail(value);
+    if (name === "username") setUsername(value);
     if (name === "password") setPassword(value);
     if (name === "profileName") setProfileName(value);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const data = { email, profileName, password };
+    const data = { username, profileName, password };
     axios
-      .post(`${apiUrl}/auth/register`, data)
+      .post(`http://159.223.57.121:8090/auth/register`, data)
       .then((res) => {
         console.log(res.data);
         alert("Registration successful. Please login to continue.");
+        navigate("/");
       })
       .catch((err) => {
         console.log(err);
@@ -44,36 +46,28 @@ function RegisterPage() {
             <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
               <div className="rounded-md shadow-sm -space-y-px">
                 <div>
-                  <label
-                    // htmlFor="email-address"
-                    className="sr-only"
-                  >
+                  <label htmlFor="username" className="sr-only">
                     Email address
                   </label>
                   <input
-                    id="email-address"
-                    type="email"
-                    // autoComplete="email"
+                    id="username"
+                    type="text"
                     required
                     className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-400 focus:border-sky-400 focus:z-10 sm:text-sm mb-2"
                     placeholder="Email address"
-                    name="email"
-                    value={email}
+                    name="username"
+                    value={username}
                     onChange={handleInputChange}
                   />
                 </div>
                 <div>
-                  <label
-                    // htmlFor="email-address"
-                    className="sr-only"
-                  >
+                  <label htmlFor="profileName" className="sr-only">
                     Profile Name
                   </label>
                   <input
                     id="profileName"
                     type="test"
-                    // autoComplete="email"
-                    // required
+                    required
                     className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-400 focus:border-sky-400 focus:z-10 sm:text-sm mb-2"
                     placeholder="Enter Profile Name"
                     name="profileName"
@@ -82,18 +76,13 @@ function RegisterPage() {
                   />
                 </div>
                 <div>
-                  <label
-                    // htmlFor="password"
-                    className="sr-only"
-                  >
+                  <label htmlFor="password" className="sr-only">
                     Password
                   </label>
                   <input
-                    // id="password"
-                    // name="password"
+                    id="password"
                     type="password"
-                    // autoComplete="current-password"
-                    // required
+                    required
                     className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-400 focus:border-sky-400 focus:z-10 sm:text-sm mb-2"
                     placeholder="Password"
                     name="password"
@@ -103,7 +92,7 @@ function RegisterPage() {
                 </div>
               </div>
               <div className="text-sm">
-                <Link to="/login">
+                <Link to="/">
                   <button className="font-medium text-blue-400 hover:text-blue-300">
                     Login
                   </button>
