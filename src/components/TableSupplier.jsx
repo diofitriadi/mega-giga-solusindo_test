@@ -143,13 +143,13 @@ const TableSupplier = () => {
           </button>
         </div>
       </div>
-      <div className="px-36 w-full py-2 bg-white text-sm">
+      <div className="flex flex-col mx-auto justify-center w-[80%] py-2 bg-white text-sm">
         <table className="table-auto">
           <thead className="bg-gray-300">
             <tr>
               <th className="border px-5 py-2">No</th>
-              <th className="border px-10 py-2">Nama Supplier</th>
-              <th className="border px-20 py-2">Alamat</th>
+              <th className="border px-5 py-2">Nama Supplier</th>
+              <th className="border px-5 py-2">Alamat</th>
               <th className="border px-5 py-2">No HP</th>
               <th className="border px-5 py-2">Aksi</th>
             </tr>
@@ -163,12 +163,12 @@ const TableSupplier = () => {
                 return (
                   <tr key={item.id}>
                     <td className="border px-5 py-2">{index + 1}</td>
-                    <td className="border px-10 py-2">{item.namaSupplier}</td>
-                    <td className="border px-20 py-2">{item.alamat}</td>
+                    <td className="border px-5 py-2">{item.namaSupplier}</td>
+                    <td className="border px-5 py-2">{item.alamat}</td>
                     <td className="border px-5 py-2">{item.noTelp}</td>
-                    <td className="border px-5">
+                    <td className="border px-5 p-2 flex justify-around">
                       <button
-                        className="bg-yellow-500 px-1 py-1 m-2 rounded-lg shadow"
+                        className="bg-yellow-500 px-2 py-1  rounded-lg shadow"
                         onClick={() => {
                           setSupplierId(item.supplierId);
                           handleOpenEditSupplierModal(item.id);
@@ -178,7 +178,7 @@ const TableSupplier = () => {
                       </button>
                       <button
                         onClick={() => handleDelete(item.id)}
-                        className="bg-red-500 px-1 py-1 rounded-lg shadow"
+                        className="bg-red-500 px-2 py-1 rounded-lg shadow"
                       >
                         Delete
                       </button>
