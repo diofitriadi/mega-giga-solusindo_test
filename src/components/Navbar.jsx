@@ -31,12 +31,13 @@ const Navbar = () => {
               />
             </div>
           </div>
-          <div>
-            <GiHamburgerMenu
-              size={35}
-              className="border p-1 rounded-md border-slate-500"
-            />
-            <button onClick={handleLogout}>Logout</button>
+          <div className="flex gap-10">
+            <button
+              className="bg-red-600 px-4 py-1 rounded shadow border text-white outline-none"
+              onClick={handleLogout}
+            >
+              Logout
+            </button>
           </div>
         </div>
       </div>
