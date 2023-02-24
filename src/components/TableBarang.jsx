@@ -8,7 +8,7 @@ const TableBarang = () => {
   const [dataBarang, setDataBarang] = useState([]);
   const [isBarangModalOpen, setIsBarangModalOpen] = useState(false);
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  // const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
 
   const token = localStorage.getItem("token");
@@ -30,18 +30,6 @@ const TableBarang = () => {
     setisEditBarangModalOpen(false);
   };
 
-  // Fungsi rupiah
-  function formatRupiah(angka) {
-    let rupiah = "";
-    angka = angka.toString();
-    if (angka.length < 5) {
-      angka = "0".repeat(5 - angka.length) + angka;
-    }
-    let splitAngka = angka.match(/\d{3}/g);
-    rupiah = "Rp " + splitAngka.reverse().join(".");
-
-    return rupiah;
-  }
   // Get Barang
   const getBarang = async () => {
     try {
@@ -56,8 +44,7 @@ const TableBarang = () => {
         }
       );
       setDataBarang(result.data.data);
-      setTotalPages(result.data.totalPages);
-      console.log(result.data);
+      console.log(dataBarang);
       setIsLoading(false);
     } catch (err) {
       console.log(err);
@@ -72,9 +59,17 @@ const TableBarang = () => {
   // Add Barang
   const handleTambahBarang = async (formData) => {
     try {
-      await axios.post("http://159.223.57.121:8090/barang", formData);
-      setIsModalOpen(false);
-      getBarang();
+      const response = await axios.post(
+        "http://159.223.57.121:8090/barang/create",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      alert("Add Data Berhasil");
+      console.log(response.data);
     } catch (error) {
       console.log(error);
     }
@@ -115,11 +110,9 @@ const TableBarang = () => {
                     <td className="border px-5 py-2">{index + 1}</td>
                     <td className="border px-10 py-2">{item.namaBarang}</td>
                     <td className="border px-1 py-2">{item.stok}</td>
-                    <td className="border px-3 py-2">
-                      {formatRupiah(item.harga)}
-                    </td>
+                    <td className="border px-3 py-2">{item.harga}</td>
                     <td className="border px-10 py-2">
-                      {item.supplier.namaSupplier}
+                      {item.supplier?.namaSupplier}
                     </td>
                     <td className="border px-5">
                       <button
