@@ -1,47 +1,43 @@
-import { createContext, useState, useContext } from "react";
+import React, { useState, useContext } from "react";
 import axios from "axios";
 
-export const AuthContext = createContext();
+const AuthContext = React.createContext();
 
-export function AuthProvider({ children }) {
-  const apiUrl = import.meta.env.VITE_API_URL;
-  const [user, setUser] = useState(null);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
-
-  async function login(email, password) {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const response = await axios.post(`${apiUrl}/auth/login`, {
-        email,
-        password,
-      });
-      setUser(response.data.email, response.data.password);
-    } catch (error) {
-      setError(error.response.data.message);
-    }
-
-    setLoading(false);
-  }
-
-  const clearAuthData = () => {
-    setUser(null);
-    setError(null);
-  };
-
-  const value = {
-    user,
-    error,
-    loading,
-    login,
-    clearAuthData,
-  };
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-}
-
-export function useAuth() {
+function useAuth() {
   return useContext(AuthContext);
 }
+
+function AuthProvider(props) {
+  const [user, setUser] = useState(null);
+
+  const login = async (username, password) => {
+    try {
+      const response = await axios.post(
+        "http://159.223.57.121:8090/auth/login",
+        {
+          username: username,
+          password: password,
+        }
+      );
+
+      const token = response.data.data.token;
+      console.log(token);
+      localStorage.setItem("username", username);
+      localStorage.setItem("token", token);
+      setUser({ token: token });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const logout = () => {
+    localStorage.removeItem("token");
+    setUser(null);
+  };
+
+  const value = { user, login, logout };
+
+  return <AuthContext.Provider value={value} {...props} />;
+}
+
+export { AuthProvider, useAuth };

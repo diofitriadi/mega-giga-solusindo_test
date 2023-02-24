@@ -1,10 +1,18 @@
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useState, useEffect } from "react";
 import data from "../api/data";
 import AddBarangModal from "./AddBarangModal";
 import EditBarangModal from "./EditBarangModal";
 
 const TableBarang = () => {
+  const [dataBarang, setDataBarang] = useState([]);
   const [isBarangModalOpen, setIsBarangModalOpen] = useState(false);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const token = localStorage.getItem("token");
+
   const handleBarangOpenModal = () => {
     setIsBarangModalOpen(true);
   };
@@ -22,6 +30,56 @@ const TableBarang = () => {
     setisEditBarangModalOpen(false);
   };
 
+  // Fungsi rupiah
+  function formatRupiah(angka) {
+    let rupiah = "";
+    angka = angka.toString();
+    if (angka.length < 5) {
+      angka = "0".repeat(5 - angka.length) + angka;
+    }
+    let splitAngka = angka.match(/\d{3}/g);
+    rupiah = "Rp " + splitAngka.reverse().join(".");
+
+    return rupiah;
+  }
+  // Get Barang
+  const getBarang = async () => {
+    try {
+      setIsLoading(true);
+
+      const result = await axios.get(
+        `http://159.223.57.121:8090/barang/find-all?limit=8&offset=${page}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setDataBarang(result.data.data);
+      setTotalPages(result.data.totalPages);
+      console.log(result.data);
+      setIsLoading(false);
+    } catch (err) {
+      console.log(err);
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getBarang();
+  }, []);
+
+  // Add Barang
+  const handleTambahBarang = async (formData) => {
+    try {
+      await axios.post("http://159.223.57.121:8090/barang", formData);
+      setIsModalOpen(false);
+      getBarang();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <>
       <div className="block w-full px-10 py-2 bg-white">
@@ -35,46 +93,50 @@ const TableBarang = () => {
           </button>
         </div>
       </div>
-      <div className="px-16 w-full py-2 bg-white text-sm">
+      <div className="px-36 w-full py-2 bg-white text-sm">
         <table className="table-auto">
           <thead className="bg-gray-300">
             <tr>
               <th className="border px-5 py-2">No</th>
-              <th className="border px-5 py-2">Nama Barang</th>
-              <th className="border px-5 py-2">Stock</th>
-              <th className="border px-5 py-2">Harga</th>
-              <th className="border px-5 py-2">Nama Supplier</th>
-              <th className="border px-5 py-2">Alamat Supplier</th>
-              <th className="border px-5 py-2">No Telp Supplier</th>
+              <th className="border px-10 py-2">Nama Barang</th>
+              <th className="border px-3 py-2 text-center">Stock</th>
+              <th className="border px-1 py-2">Harga</th>
+              <th className="border px-10 py-2">Nama Supplier</th>
               <th className="border px-5 py-2">Aksi</th>
             </tr>
           </thead>
-          <tbody>
-            {data.map((item) => {
-              return (
-                <tr key={item.id}>
-                  <td className="border px-5 py-2">{item.id}</td>
-                  <td className="border px-5 py-2">{item.name}</td>
-                  <td className="border px-5 py-2">{item.stock}</td>
-                  <td className="border px-5 py-2">{item.price}</td>
-                  <td className="border px-5 py-2">{item.supplierName}</td>
-                  <td className="border px-5 py-2">{item.supplierAddress}</td>
-                  <td className="border px-5 py-2">{item.supplierPhone}</td>
-                  <td className="border px-5">
-                    <button
-                      onClick={handleOpenEditBarangModal}
-                      className="bg-yellow-500 px-1 py-1 m-2 rounded-lg shadow"
-                    >
-                      Edit
-                    </button>
-                    <button className="bg-red-500 px-1 py-1 rounded-lg shadow">
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
+          {isLoading ? (
+            <div>Loading....</div>
+          ) : (
+            <tbody>
+              {dataBarang.map((item, index) => {
+                return (
+                  <tr key={item.id}>
+                    <td className="border px-5 py-2">{index + 1}</td>
+                    <td className="border px-10 py-2">{item.namaBarang}</td>
+                    <td className="border px-1 py-2">{item.stok}</td>
+                    <td className="border px-3 py-2">
+                      {formatRupiah(item.harga)}
+                    </td>
+                    <td className="border px-10 py-2">
+                      {item.supplier.namaSupplier}
+                    </td>
+                    <td className="border px-5">
+                      <button
+                        onClick={handleOpenEditBarangModal}
+                        className="bg-yellow-500 px-1 py-1 m-2 rounded-lg shadow"
+                      >
+                        Edit
+                      </button>
+                      <button className="bg-red-500 px-1 py-1 rounded-lg shadow">
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          )}
         </table>
         {/* Pagination */}
         <div className="flex justify-center mt-4">
@@ -82,7 +144,7 @@ const TableBarang = () => {
             <li className="mr-2">
               <a
                 href="#"
-                className="px-3 py-1 bg-gray-200 rounded-md cursor-pointer hover:bg-blue-500 hover:text-white"
+                className="px-3 py-1 bg-blue-500 rounded-md cursor-pointer text-white"
               >
                 1
               </a>
@@ -90,17 +152,9 @@ const TableBarang = () => {
             <li className="mr-2">
               <a
                 href="#"
-                className="px-3 py-1 bg-blue-500 rounded-md cursor-pointer text-white"
-              >
-                2
-              </a>
-            </li>
-            <li className="mr-2">
-              <a
-                href="#"
                 className="px-3 py-1 bg-gray-200 rounded-md cursor-pointer hover:bg-blue-500 hover:text-white"
               >
-                3
+                2
               </a>
             </li>
             <li className="mr-2">
@@ -122,7 +176,7 @@ const TableBarang = () => {
       <AddBarangModal
         isOpen={isBarangModalOpen}
         onClose={handleCloseBarangModal}
-        // onSubmit={handleAddBarang}
+        onSubmit={handleTambahBarang}
       />
       <EditBarangModal
         isOpen={isEditBarangModalOpen}
