@@ -10,8 +10,7 @@ import RegisterPage from "./pages/RegisterPage";
 import { useAuth } from "./context/authContext";
 
 function App() {
-  const { user } = useAuth();
-  console.log(user);
+  const { login } = useAuth();
 
   return (
     <Router>

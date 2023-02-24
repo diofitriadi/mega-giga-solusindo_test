@@ -9,7 +9,6 @@ function useAuth() {
 
 function AuthProvider(props) {
   const [user, setUser] = useState(null);
-
   const login = async (username, password) => {
     try {
       const response = await axios.post(
@@ -21,7 +20,6 @@ function AuthProvider(props) {
       );
 
       const token = response.data.data.token;
-      console.log(token);
       localStorage.setItem("username", username);
       localStorage.setItem("token", token);
       setUser({ token: token });
@@ -32,6 +30,7 @@ function AuthProvider(props) {
 
   const logout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("username"); // tambahkan ini jika perlu
     setUser(null);
   };
 

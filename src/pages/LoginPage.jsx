@@ -5,6 +5,7 @@ import { useAuth } from "../context/authContext";
 function LoginPage() {
   const navigate = useNavigate();
   const { user, loading, login } = useAuth();
+  console.log(user, "uhuyyyy");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -13,10 +14,14 @@ function LoginPage() {
     const passwordValue = password.value;
     try {
       await login(usernameValue, passwordValue);
-      navigate("/dashboard", { replace: true });
+      if (login) {
+        navigate("/dashboard", { replace: true });
+      } else {
+        navigate("/", { replace: true });
+      }
     } catch (error) {
-      console.log(error);
       navigate("/", { replace: true });
+      console.log(error);
     }
   };
 
