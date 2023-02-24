@@ -1,8 +1,9 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import data from "../api/data";
 import AddBarangModal from "./AddBarangModal";
 import EditBarangModal from "./EditBarangModal";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 
 const TableBarang = () => {
   const [dataBarang, setDataBarang] = useState([]);
@@ -33,6 +34,53 @@ const TableBarang = () => {
   const handleCloseEditBarangModal = () => {
     setBarangId("");
     setisEditBarangModalOpen(false);
+  };
+
+  //PDF
+  const generatePDF = () => {
+    const doc = new jsPDF();
+    const tableColumn = [
+      "No",
+      "Nama Barang",
+      "Stock",
+      "Harga",
+      "Nama Supplier",
+    ];
+    const tableRows = [];
+
+    dataBarang.data?.forEach((barang, index) => {
+      const { namaBarang, stok, harga } = barang;
+      const { namaSupplier } = barang.supplier;
+      tableRows.push([index + 1, namaBarang, stok, harga, namaSupplier]);
+    });
+
+    const header = "Daftar Barang";
+    const textWidth =
+      (doc.getStringUnitWidth(header) * doc.internal.getFontSize()) /
+      doc.internal.scaleFactor;
+    const textOffset = (doc.internal.pageSize.width - textWidth) / 2;
+    doc.text(header, textOffset, 20);
+
+    doc.setFontSize(11);
+    doc.setTextColor(100);
+    doc.autoTable({
+      headStyles: {
+        fillColor: [96, 165, 250],
+        textColor: [255, 255, 255],
+        halign: "center",
+      },
+      bodyStyles: {
+        halign: "center",
+      },
+      startY: 30,
+      head: [tableColumn],
+      body: tableRows,
+    });
+
+    const pdfOutput = doc.output();
+    const blob = new Blob([pdfOutput], { type: "application/pdf" });
+    const url = URL.createObjectURL(blob);
+    window.open(url);
   };
 
   // Get Barang
@@ -139,17 +187,25 @@ const TableBarang = () => {
       <div className="block w-full px-10 py-2 bg-white">
         <div className="flex justify-between items-center">
           <h3 className="text-lg font-medium text-gray-900">Barang</h3>
-          <button
-            className=" bg-blue-400 px-3 py-2 shadow rounded-lg text-white text-sm"
-            onClick={handleBarangOpenModal}
-          >
-            Tambah Barang
-          </button>
+          <div className="flex gap-5">
+            <button
+              className="bg-blue-400 px-3 py-2 shadow rounded-lg text-white text-sm"
+              onClick={generatePDF}
+            >
+              Cetak PDF
+            </button>
+            <button
+              className=" bg-blue-400 px-3 py-2 shadow rounded-lg text-white text-sm"
+              onClick={handleBarangOpenModal}
+            >
+              Tambah Barang
+            </button>
+          </div>
         </div>
       </div>
       <div className="flex flex-col mx-auto justify-center w-[80%] py-2 bg-white text-sm">
         <table className="table-auto">
-          <thead className="bg-gray-300">
+          <thead className="bg-blue-400 text-white">
             <tr>
               <th className="border px-5 py-2">No</th>
               <th className="border px-5 py-2">Nama Barang</th>
