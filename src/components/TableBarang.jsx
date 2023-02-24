@@ -8,7 +8,6 @@ const TableBarang = () => {
   const [dataBarang, setDataBarang] = useState([]);
   const [isBarangModalOpen, setIsBarangModalOpen] = useState(false);
   const [page, setPage] = useState(1);
-  // const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
 
   const token = localStorage.getItem("token");
