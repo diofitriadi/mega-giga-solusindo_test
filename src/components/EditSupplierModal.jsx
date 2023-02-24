@@ -13,7 +13,7 @@ const EditSupplierModal = ({ isOpen, onClose, onSubmit, supplierId }) => {
 
   const handleEdit = (event) => {
     event.preventDefault();
-    onSubmit(formData.id, supplierId);
+    onSubmit(formData, supplierId);
     onClose();
   };
 
