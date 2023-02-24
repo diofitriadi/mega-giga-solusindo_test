@@ -6,15 +6,25 @@ const EditBarangModal = ({ isOpen, onClose, onSubmit, barangId }) => {
     stok: "",
     harga: "",
     id: barangId,
+    supplier: {
+      namaSupplier: "",
+    },
   });
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      supplier: {
+        ...prevState.supplier,
+        [name]: value,
+      },
+    }));
   };
 
   const handleEdit = (event) => {
     event.preventDefault();
-    onSubmit(formData.id, barangId);
+    onSubmit(formData, barangId);
     onClose();
   };
 
@@ -79,6 +89,22 @@ const EditBarangModal = ({ isOpen, onClose, onSubmit, barangId }) => {
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     onChange={handleChange}
                     value={formData.harga}
+                  />
+                </div>
+                <div className="mb-4">
+                  <label
+                    htmlFor="namaSupplier"
+                    className="block text-gray-700 font-bold mb-2"
+                  >
+                    Nama Supplier
+                  </label>
+                  <input
+                    type="text"
+                    id="namaSupplier"
+                    name="namaSupplier"
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    onChange={handleChange}
+                    value={formData.supplier.namaSupplier}
                   />
                 </div>
                 <div className="flex justify-end">

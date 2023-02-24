@@ -7,6 +7,7 @@ const TableSupplier = () => {
   const [dataSupplier, setDataSupplier] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [isSupplierModalOpen, setIsSupplierModalOpen] = useState(false);
 
   const token = localStorage.getItem("token");
@@ -21,6 +22,7 @@ const TableSupplier = () => {
   const [isEditSupplierModalOpen, setisEditSupplierModalOpen] = useState(false);
   const [isEditSupplier, setIsEditSupplier] = useState(false);
   const [supplierId, setSupplierId] = useState("");
+
   const handleOpenEditSupplierModal = (id) => {
     console.log(id);
     setIsEditSupplier(true);
@@ -32,11 +34,9 @@ const TableSupplier = () => {
     setisEditSupplierModalOpen(false);
   };
 
-  // Get Supplier
   const getSupplier = async () => {
     try {
       setIsLoading(true);
-
       const result = await axios.get(
         `http://159.223.57.121:8090/supplier/find-all?limit=8&offset=${page}`,
         {
@@ -46,6 +46,7 @@ const TableSupplier = () => {
         }
       );
       setDataSupplier(result.data.data);
+      setTotalPages(Math.ceil(result.data.total_page / 12)); // Assuming 8 items per page
       setIsLoading(false);
     } catch (err) {
       console.log(err);
@@ -53,9 +54,13 @@ const TableSupplier = () => {
     }
   };
 
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
+  };
+
   useEffect(() => {
     getSupplier();
-  }, []);
+  }, [page]);
 
   const handleTambahSupplier = async (formData) => {
     try {
@@ -184,47 +189,26 @@ const TableSupplier = () => {
             </tbody>
           )}
         </table>
-        {/* Pagination */}
-        <div className="flex justify-center mt-4">
-          <ul className="flex">
-            <li className="mr-2">
-              <a
-                href="#"
-                className="px-3 py-1 bg-gray-200 rounded-md cursor-pointer hover:bg-blue-500 hover:text-white"
-              >
-                1
-              </a>
-            </li>
-            <li className="mr-2">
-              <a
-                href="#"
-                className="px-3 py-1 bg-blue-500 rounded-md cursor-pointer text-white"
-              >
-                2
-              </a>
-            </li>
-            <li className="mr-2">
-              <a
-                href="#"
-                className="px-3 py-1 bg-gray-200 rounded-md cursor-pointer hover:bg-blue-500 hover:text-white"
-              >
-                3
-              </a>
-            </li>
-            <li className="mr-2">
-              <span className="px-3 py-1 bg-gray-200 rounded-md cursor-not-allowed">
-                ...
-              </span>
-            </li>
-            <li className="mr-2">
-              <a
-                href="#"
-                className="px-3 py-1 bg-gray-200 rounded-md cursor-pointer hover:bg-blue-500 hover:text-white"
-              >
-                10
-              </a>
-            </li>
-          </ul>
+        <div className="flex justify-center ">
+          {Array(totalPages)
+            .fill()
+            .map((_, i) => {
+              const pageNum = i + 1;
+              return (
+                <button
+                  key={pageNum}
+                  className={`px-3 mx-1 mt-5 py-1 rounded-md ${
+                    pageNum === page
+                      ? "bg-blue-500 text-white"
+                      : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                  }`}
+                  disabled={pageNum === page}
+                  onClick={() => handlePageChange(pageNum)}
+                >
+                  {pageNum}
+                </button>
+              );
+            })}
         </div>
       </div>
       <AddSupplierModal

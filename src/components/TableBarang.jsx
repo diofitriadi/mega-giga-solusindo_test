@@ -8,6 +8,7 @@ const TableBarang = () => {
   const [dataBarang, setDataBarang] = useState([]);
   const [isBarangModalOpen, setIsBarangModalOpen] = useState(false);
   const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
 
   const token = localStorage.getItem("token");
@@ -24,13 +25,13 @@ const TableBarang = () => {
   const [isEditBarang, setIsEditBarang] = useState(false);
   const [barangId, setBarangId] = useState("");
   const handleOpenEditBarangModal = (id) => {
-    console.log(id);
     setIsEditBarang(true);
     setBarangId(id);
     setisEditBarangModalOpen(true);
   };
 
   const handleCloseEditBarangModal = () => {
+    setBarangId("");
     setisEditBarangModalOpen(false);
   };
 
@@ -47,8 +48,8 @@ const TableBarang = () => {
           },
         }
       );
-      setDataBarang(result.data.data);
-      console.log(dataBarang);
+      setDataBarang(result.data);
+      setTotalPages(Math.ceil(result.data.total_page / 32)); // Assuming 8 items per page
       setIsLoading(false);
     } catch (err) {
       console.log(err);
@@ -56,9 +57,12 @@ const TableBarang = () => {
     }
   };
 
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
+  };
   useEffect(() => {
     getBarang();
-  }, []);
+  }, [page]);
 
   // Add Barang
   const handleTambahBarang = async (formData) => {
@@ -107,7 +111,7 @@ const TableBarang = () => {
     }
   };
 
-  const handleUpdateBarang = async (formData, id) => {
+  const handleUpdateBarang = async (formData, id, setFormData) => {
     try {
       const response = await axios.put(
         `http://159.223.57.121:8090/barang/update/${id}`,
@@ -118,6 +122,7 @@ const TableBarang = () => {
           },
         }
       );
+      setFormData({});
       console.log(response.data);
       alert("Data berhasil diperbarui");
 
@@ -158,7 +163,7 @@ const TableBarang = () => {
             <div>Loading....</div>
           ) : (
             <tbody>
-              {dataBarang.map((item, index) => {
+              {dataBarang.data?.map((item, index) => {
                 return (
                   <tr key={item.id}>
                     <td className="border px-5 py-2">{index + 1}</td>
@@ -192,38 +197,26 @@ const TableBarang = () => {
           )}
         </table>
         {/* Pagination */}
-        <div className="flex justify-center mt-4">
-          <ul className="flex">
-            <li className="mr-2">
-              <a
-                href="#"
-                className="px-3 py-1 bg-blue-500 rounded-md cursor-pointer text-white"
-              >
-                1
-              </a>
-            </li>
-            <li className="mr-2">
-              <a
-                href="#"
-                className="px-3 py-1 bg-gray-200 rounded-md cursor-pointer hover:bg-blue-500 hover:text-white"
-              >
-                2
-              </a>
-            </li>
-            <li className="mr-2">
-              <span className="px-3 py-1 bg-gray-200 rounded-md cursor-not-allowed">
-                ...
-              </span>
-            </li>
-            <li className="mr-2">
-              <a
-                href="#"
-                className="px-3 py-1 bg-gray-200 rounded-md cursor-pointer hover:bg-blue-500 hover:text-white"
-              >
-                10
-              </a>
-            </li>
-          </ul>
+        <div className="flex justify-center ">
+          {Array(totalPages)
+            .fill()
+            .map((_, i) => {
+              const pageNum = i + 1;
+              return (
+                <button
+                  key={pageNum}
+                  className={`px-3 mx-1 mt-5 py-1 rounded-md ${
+                    pageNum === page
+                      ? "bg-blue-500 text-white"
+                      : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                  }`}
+                  disabled={pageNum === page}
+                  onClick={() => handlePageChange(pageNum)}
+                >
+                  {pageNum}
+                </button>
+              );
+            })}
         </div>
       </div>
       <AddBarangModal
