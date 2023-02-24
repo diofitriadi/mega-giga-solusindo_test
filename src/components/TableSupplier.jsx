@@ -8,6 +8,9 @@ const TableSupplier = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [isSupplierModalOpen, setIsSupplierModalOpen] = useState(false);
+
+  const token = localStorage.getItem("token");
+
   const handleSupplierOpenModal = () => {
     setIsSupplierModalOpen(true);
   };
@@ -28,7 +31,7 @@ const TableSupplier = () => {
   const getSupplier = async () => {
     try {
       setIsLoading(true);
-      const token = localStorage.getItem("token");
+
       const result = await axios.get(
         `http://159.223.57.121:8090/supplier/find-all?limit=8&offset=${page}`,
         {
@@ -48,6 +51,24 @@ const TableSupplier = () => {
   useEffect(() => {
     getSupplier();
   }, []);
+
+  const handleTambahSupplier = async (formData) => {
+    try {
+      const response = await axios.post(
+        "http://159.223.57.121:8090/supplier/create",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      alert("Add Data Berhasil");
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <>
       <div className="block w-full px-10 py-2 bg-white">
@@ -147,7 +168,7 @@ const TableSupplier = () => {
       <AddSupplierModal
         isOpen={isSupplierModalOpen}
         onClose={handleCloseSupplierModal}
-        // onSubmit={handleAddSupplier}
+        onSubmit={handleTambahSupplier}
       />
       <EditSupplierModal
         isOpen={isEditSupplierModalOpen}

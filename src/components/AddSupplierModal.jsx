@@ -1,23 +1,28 @@
 import React, { useState } from "react";
 
 const AddSupplierModal = ({ isOpen, onClose, onSubmit }) => {
-  // const [formData, setFormData] = useState({
-  //   nama: "",
-  //   alamat: "",
-  //   no_telp: "",
-  // });
+  const [formData, setFormData] = useState({
+    alamat: "",
+    namaSupplier: "",
+    noTelp: "",
+  });
 
-  // const handleChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
-  // };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await onSubmit(formData);
+      onClose();
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   onSubmit(formData);
-  //   onClose();
-  // };
-
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
   return (
     <>
       {isOpen && (
@@ -32,24 +37,21 @@ const AddSupplierModal = ({ isOpen, onClose, onSubmit }) => {
               <div className="bg-gray-200 py-2 px-4">
                 <h3 className="text-lg font-bold">Tambah Supplier</h3>
               </div>
-              <form
-                // onSubmit={handleSubmit}
-                className="px-4 py-4"
-              >
+              <form onSubmit={handleSubmit} className="px-4 py-4">
                 <div className="mb-4">
                   <label
-                    htmlFor="nama"
+                    htmlFor="namaSupplier"
                     className="block text-gray-700 font-bold mb-2"
                   >
                     Nama Supplier
                   </label>
                   <input
                     type="text"
-                    id="nama"
-                    name="nama"
+                    id="namaSupplier"
+                    name="namaSupplier"
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    // onChange={handleChange}
-                    // value={formData.nama}
+                    onChange={handleChange}
+                    value={formData.namaSupplier}
                   />
                 </div>
                 <div className="mb-4">
@@ -64,24 +66,24 @@ const AddSupplierModal = ({ isOpen, onClose, onSubmit }) => {
                     id="alamat"
                     name="alamat"
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    // onChange={handleChange}
-                    // value={formData.alamat}
+                    onChange={handleChange}
+                    value={formData.alamat}
                   />
                 </div>
                 <div className="mb-4">
                   <label
-                    htmlFor="no_telp"
+                    htmlFor="noTelp"
                     className="block text-gray-700 font-bold mb-2"
                   >
                     No Telp Supplier
                   </label>
                   <input
                     type="text"
-                    id="no_telp"
-                    name="no_telp"
+                    id="noTelp"
+                    name="noTelp"
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    // onChange={handleChange}
-                    // value={formData.no_telp}
+                    onChange={handleChange}
+                    value={formData.noTelp}
                   />
                 </div>
                 <div className="flex justify-end">
